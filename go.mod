@@ -1,4 +1,4 @@
-module github.com/QQGoblin/scheduler-plugin
+module github.com/QQGoblin/scheduler-plugins
 
 go 1.19
 
