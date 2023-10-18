@@ -162,7 +162,7 @@ func (p *SPPriority) ownerReplicasets(ctx context.Context, pod *v1.Pod) (*appsv1
 
 func (p *SPPriority) getScheduleState(rs *appsv1.ReplicaSet) (*scheduleState, error) {
 
-	stateStr, isOK := rs.Annotations[p.priConfig.stateAnnKey]
+	stateStr, isOK := rs.Annotations[p.priConfig.StateAnnKey]
 	if !isOK {
 		return &scheduleState{
 			NodeCount: make(map[string]int),
@@ -208,7 +208,7 @@ func (p *SPPriority) updateOwnerReplicasets(rs *appsv1.ReplicaSet, state *schedu
 	if rs.Annotations == nil {
 		rs.Annotations = make(map[string]string)
 	}
-	rs.Annotations[p.priConfig.stateAnnKey] = string(message)
+	rs.Annotations[p.priConfig.StateAnnKey] = string(message)
 
 	patch := map[string]interface{}{"metadata": map[string]interface{}{"annotations": rs.Annotations}}
 

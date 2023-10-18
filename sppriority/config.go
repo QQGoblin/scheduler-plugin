@@ -16,7 +16,7 @@ type PriorityConfig struct {
 	SkipMultiReplica   bool     `yaml:"skipMultiReplica,omitempty"`
 	NamespaceWhiteList []string `yaml:"namespaceWhiteList,omitempty"`
 	DisableAnnKey      string   `yaml:"disableAnnKey,omitempty"`
-	stateAnnKey        string   `yaml:"stateAnnKey,omitempty"`
+	StateAnnKey        string   `yaml:"stateAnnKey,omitempty"`
 }
 
 func defaultConfig() *PriorityConfig {
@@ -25,7 +25,7 @@ func defaultConfig() *PriorityConfig {
 		SkipMultiReplica:   false,
 		NamespaceWhiteList: []string{"kube-system"},
 		DisableAnnKey:      "annotation.sp.io/disable-priority-scheduler",
-		stateAnnKey:        "annotation.sp.io/schedule-state",
+		StateAnnKey:        "annotation.sp.io/schedule-state",
 	}
 }
 
