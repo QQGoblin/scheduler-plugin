@@ -1,0 +1,5 @@
+skipMultiReplica: true  # 禁止多副本时，采用优先级调度
+namespaceWhiteList:     # 禁止优先级调度的 namespace
+- kube-system
+disableAnnKey: "annotation.sp.io/disable-priority-scheduler"  # 禁止优先级调度的注解
+stateAnnKey: "annotation.sp.io/schedule-state"
