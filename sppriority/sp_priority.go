@@ -10,6 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 )
@@ -133,6 +134,8 @@ func (p *SPPriority) PostBind(ctx context.Context, state *framework.CycleState, 
 
 	p.updateScheduleState(schState, nodeName)
 
+	p.clearDirtyNodeCount(schState)
+
 	if err = p.updateOwnerReplicasets(ownerObj, schState); err != nil {
 		klog.Errorf("%s update owner obj failed: %v", logPrefix, err)
 		return
@@ -196,6 +199,30 @@ func (p *SPPriority) updateScheduleState(state *scheduleState, nodename string) 
 
 	state.Last = nodename
 
+}
+
+func (p *SPPriority) clearDirtyNodeCount(state *scheduleState) error {
+
+	nodelist, err := p.sharedLister.NodeInfos().List()
+	if err != nil {
+		klog.ErrorS(err, "list nodeinfos failed")
+		return err
+	}
+
+	nodes := sets.NewString()
+	for _, item := range nodelist {
+		nodes.Insert(item.Node().Name)
+	}
+
+	newNodeCount := make(map[string]int)
+	for k, v := range state.NodeCount {
+		if !nodes.Has(k) && k != state.Last {
+			continue
+		}
+		newNodeCount[k] = v
+	}
+	state.NodeCount = newNodeCount
+	return nil
 }
 
 func (p *SPPriority) updateOwnerReplicasets(rs *appsv1.ReplicaSet, state *scheduleState) error {
